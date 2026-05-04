@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xG Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #060a0d;
+  --panel:  #0b1018;
+  --panel2: #0e1520;
+  --border: #162030;
+  --green:  #00e676;
+  --amber:  #ffab00;
+  --red:    #f2415a;
+  --blue:   #40c4ff;
+  --purple: #ce93d8;
+  --text:   #c0d4e4;
+  --dim:    #3d5566;
+  --dim2:   #587080;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  min-height: 100vh;
+  padding: 32px 16px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ─── HEADER ─── */
+header { text-align:center; margin-bottom:36px; }
+header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px,6.5vw,76px);
+  letter-spacing: 8px;
+  color: #fff;
+  line-height: 1;
+}
+header h1 em { color: var(--green); font-style:normal; }
+header p {
+  font-size: 9.5px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  margin-top: 6px;
+}
+  
+
+/* ─── LAYOUT ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 14px;
+  width: 100%;
+  max-width: 1120px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ─── CARD ─── */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 22px;
+}
+.card-title {
+  font-size: 8.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── PITCH ─── */
+#pitch-wrap {
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+#pitch-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 680 / 790;
+  height: auto;
+  cursor: crosshair;
+  border-radius: 4px;
+  overflow: visible;
+}
+
+/* Shot dot animation */
+@keyframes dotPop {
+  0%   { r: 3; opacity: 0.4; }
+  50%  { r: 11; opacity: 1; }
+  100% { r: 7; opacity: 0.93; }
+}
+@keyframes ringPulse {
+  0%   { r: 6;  opacity: 0.6; }
+  60%  { r: 22; opacity: 0.15; }
+  100% { r: 15; opacity: 0.3; }
+}
+.dot-animate {
+  animation: dotPop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.ring-animate {
+  animation: ringPulse 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+/* ─── CONTROLS ─── */
+.ctrl-stack { display:flex; flex-direction:column; gap:14px; }
+
+.ctrl-label {
+  font-size: 8.5px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  margin-bottom: 7px;
+}
+
+/* foot toggle — main/sub */
+.foot-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.foot-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  flex: 1;
+}
+.foot-toggle-btn {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.foot-toggle-btn button {
+  padding: 5px 14px;
+  background: transparent;
+  border: none;
+  color: var(--dim2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.foot-toggle-btn button.active {
+  background: rgba(0,230,118,0.12);
+  color: var(--green);
+}
+.foot-badge {
+  font-size: 8px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+.foot-badge.main {
+  background: rgba(0,230,118,0.12);
+  color: var(--green);
+  border: 1px solid rgba(0,230,118,0.3);
+}
+.foot-badge.sub {
+  background: rgba(255,171,0,0.10);
+  color: var(--amber);
+  border: 1px solid rgba(255,171,0,0.3);
+}
+
+/* skill bar */
+.skill-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.skill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.skill-foot-tag {
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  min-width: 30px;
+  color: var(--dim2);
+}
+.skill-foot-tag.main { color: var(--green); }
+.skill-foot-tag.sub  { color: var(--amber); }
+
+/* chips */
+.chips { display:flex; flex-wrap:wrap; gap:5px; }
+.chip {
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--dim2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.1s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.chip:hover { border-color: #28425a; color: var(--text); }
+.chip.on {
+  background: rgba(0,230,118,0.09);
+  border-color: var(--green);
+  color: var(--green);
+}
+.chip.on-amber {
+  background: rgba(255,171,0,0.09);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* sliders */
+.sl-row { display:flex; align-items:center; gap:10px; }
+input[type=range] {
+  -webkit-appearance: none;
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+  border-radius: 1px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(0,230,118,0.4);
+  cursor: pointer;
+}
+input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-shadow: 0 0 6px rgba(255,171,0,0.4); }
+.sl-val {
+  font-size: 11px;
+  color: var(--green);
+  min-width: 28px;
+  text-align: right;
+}
+.sl-val.amber { color: var(--amber); }
+
+/* condition hint */
+.condition-hint {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+  margin-top: 3px;
+  padding: 0 2px;
+}
+.condition-hint .hi { color: rgba(0,230,118,0.5); }
+.condition-hint .lo { color: rgba(242,65,90,0.5); }
+
+/* ─── RIGHT COLUMN ─── */
+.right-col { display:flex; flex-direction:column; gap:12px; }
+
+/* xG display */
+.xg-card { text-align:center; padding:24px 18px 20px; }
+.xg-eye {
+  font-size: 8px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  margin-bottom: 8px;
+}
+#xg-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 90px;
+  line-height: 1;
+  letter-spacing: 2px;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.xg-track {
+  margin: 14px 0 10px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+#xg-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.2s;
+}
+#xg-verdict {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+/* breakdown */
+.bd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(22,32,48,0.8);
+  font-size: 9.5px;
+  gap: 8px;
+}
+.bd-row:last-child { border-bottom:none; }
+.bd-key { color: var(--dim2); letter-spacing:0.5px; flex:1; }
+.bd-val { font-size:10.5px; text-align:right; }
+.bd-val.pos { color: var(--green); }
+.bd-val.neg { color: var(--red); }
+.bd-val.neu { color: var(--text); }
+
+/* formula */
+.formula {
+  background: #040709;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size: 9px;
+  line-height: 1.95;
+  color: var(--dim2);
+}
+.formula .kw { color: var(--amber); }
+.formula .op { color: var(--blue); }
+.formula .vr { color: var(--text); }
+.formula .cm { color: var(--dim); }
+
+/* divider inside ctrl */
+.ctrl-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2px 0;
+  opacity: 0.5;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>x<em>G</em> ENGINE</h1>
+  <p>Expected Goals · Advanced Multi-Variable Logistic Regression</p>
+  <header>
+  <h1>x<em>G</em> ENGINE</h1>
+  <p>Expected Goals · Advanced Multi-Variable Logistic Regression</p>
+  <button id="btn-save" style="margin-top: 15px; padding: 8px 16px; background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid #00e676; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s;">📸 리포트 이미지로 저장</button>
+</header>
+</header>
+
+<div class="layout">
+
+  <!-- ══ LEFT ══ -->
+  <div class="card">
+    <div class="card-title">슛 위치 — 클릭하여 배치 (위쪽 = 공격 골문)</div>
+
+    <div id="pitch-wrap">
+      <svg id="pitch-svg" viewBox="0 0 680 790" xmlns="http://www.w3.org/2000/svg">
+        <!-- grass stripes -->
+        <rect width="680" height="790" fill="#0c1f0f"/>
+        <rect x="0"   width="68"  height="790" fill="#081508" opacity="0.5"/>
+        <rect x="136" width="68"  height="790" fill="#081508" opacity="0.5"/>
+        <rect x="272" width="68"  height="790" fill="#081508" opacity="0.5"/>
+        <rect x="408" width="68"  height="790" fill="#081508" opacity="0.5"/>
+        <rect x="544" width="68"  height="790" fill="#081508" opacity="0.5"/>
+
+        <!-- pitch outline -->
+        <rect x="10" y="10" width="660" height="770" fill="none" stroke="#2a5c3a" stroke-width="2"/>
+
+        <!-- half line -->
+        <line x1="10" y1="535" x2="670" y2="535" stroke="#2a5c3a" stroke-width="1.5"/>
+
+        <!-- center circle -->
+        <circle cx="340" cy="535" r="91.5" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <circle cx="340" cy="535" r="4" fill="#2a5c3a"/>
+
+        <!-- ── ATTACK HALF (top) ── -->
+        <rect x="138" y="10" width="404" height="165"
+              fill="rgba(0,230,118,0.02)" stroke="#2a5c3a" stroke-width="1.5"/>
+        <rect x="248" y="10" width="184" height="55"
+              fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <circle cx="340" cy="120" r="3.5" fill="#3a7c50"/>
+        <clipPath id="arc-clip">
+          <rect x="0" y="175" width="680" height="360"/>
+        </clipPath>
+        <circle cx="340" cy="120" r="91.5" fill="none" stroke="#2a5c3a" stroke-width="1.5" clip-path="url(#arc-clip)"/>
+        <!-- goal -->
+        <rect x="303" y="0" width="74" height="12" fill="none" stroke="#00e676" stroke-width="2.5"/>
+        <line x1="10" y1="10" x2="670" y2="10" stroke="#3a7050" stroke-width="1.8"/>
+
+        <!-- ── DEFENSE HALF (bottom, faded) ── -->
+        <rect x="138" y="625" width="404" height="165"
+              fill="none" stroke="#1a3a22" stroke-width="1"/>
+        <rect x="248" y="680" width="184" height="55"
+              fill="none" stroke="#1a3a22" stroke-width="1"/>
+        <circle cx="340" cy="680" r="3.5" fill="#1a3a22"/>
+        <clipPath id="arc-clip2">
+          <rect x="0" y="0" width="680" height="625"/>
+        </clipPath>
+        <circle cx="340" cy="680" r="91.5" fill="none" stroke="#1a3a22" stroke-width="1" clip-path="url(#arc-clip2)"/>
+        <rect x="303" y="778" width="74" height="12" fill="none" stroke="#1a3a22" stroke-width="1"/>
+        <line x1="10" y1="780" x2="670" y2="780" stroke="#1a3a22" stroke-width="1.5"/>
+
+        <!-- corners -->
+        <path d="M10 10  Q22 10  22 22"  fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <path d="M670 10 Q658 10 658 22" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <path d="M10 780  Q22 780  22 768"  fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <path d="M670 780 Q658 780 658 768" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+
+        <!-- shot angle guide lines -->
+        <line id="ang-l" x1="340" y1="120" x2="303" y2="10"
+              stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
+        <line id="ang-r" x1="340" y1="120" x2="377" y2="10"
+              stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
+
+        <!-- shot marker -->
+        <circle id="shot-ring" cx="340" cy="120" r="15"
+                fill="none" stroke="#00e676" stroke-width="1.5" opacity="0.3"/>
+        <circle id="shot-dot"  cx="340" cy="120" r="7"
+                fill="#00e676" opacity="0.93"
+                style="filter:drop-shadow(0 0 8px #00e676)"/>
+
+        <!-- distance label -->
+        <text id="dist-lbl" x="355" y="116"
+              fill="#00e676" font-size="13" font-family="JetBrains Mono,monospace"
+              font-weight="600" opacity="0.8"></text>
+      </svg>
+    </div>
+
+    <!-- ── Controls ── -->
+    <div class="ctrl-stack">
+
+      <!-- 오른발 / 왼발 주발 선택 -->
+      <div>
+        <div class="ctrl-label">주발 설정</div>
+        <div class="foot-switch">
+          <span class="foot-label">주발 (숙련도 10 고정)</span>
+          <div class="foot-toggle-btn">
+            <button id="btn-right" class="active" onclick="setDominant('right')">오른발</button>
+            <button id="btn-left"  onclick="setDominant('left')">왼발</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 비주발 숙련도 -->
+      <div>
+        <div class="ctrl-label">비주발 숙련도</div>
+        <div class="skill-section">
+          <div class="skill-row">
+            <span class="skill-foot-tag sub" id="sub-foot-tag">왼발</span>
+            <input type="range" id="sl-weak" class="amber" min="1" max="10" step="1" value="4">
+            <span class="sl-val amber" id="val-weak">4</span>
+          </div>
+          <div class="condition-hint">
+            <span class="lo">1 — 거의 못 씀</span>
+            <span class="hi">10 — 양발잡이</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 슈팅 발 선택 -->
+      <div>
+        <div class="ctrl-label">슈팅 발</div>
+        <div class="chips" id="g-foot">
+          <button class="chip on" data-v="dominant">
+            <span id="chip-dom-label">오른발 (주발)</span>
+          </button>
+          <button class="chip" data-v="weak">
+            <span id="chip-weak-label">왼발 (비주발)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 슛 종류 -->
+      <div>
+        <div class="ctrl-label">슛 종류</div>
+        <div class="chips" id="g-shottype">
+          <button class="chip on"  data-v="normal">일반슛</button>
+          <button class="chip"     data-v="knuckleball">무회전</button>
+          <button class="chip"     data-v="finesse">감아차기</button>
+        </div>
+      </div>
+
+      <!-- 슈팅 자세 (기존 tech에서 분리) -->
+      <div>
+        <div class="ctrl-label">슈팅 모션</div>
+        <div class="chips" id="g-tech">
+          <button class="chip on"  data-v="ground">지상 슛</button>
+          <button class="chip"     data-v="volley">발리</button>
+          <button class="chip"     data-v="head">헤더</button>
+        </div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <!-- 상황 -->
+      <div>
+        <div class="ctrl-label">상황</div>
+        <div class="chips" id="g-sit">
+          <button class="chip on"  data-v="open_play">오픈플레이</button>
+          <button class="chip"     data-v="counter">카운터</button>
+          <button class="chip"     data-v="set_piece">프리킥</button>
+          <button class="chip"     data-v="corner">코너킥</button>
+          <button class="chip"     data-v="penalty">페널티킥</button>
+        </div>
+      </div>
+
+      <!-- 어시스트 -->
+      <div>
+        <div class="ctrl-label">어시스트 유형</div>
+        <div class="chips" id="g-assist">
+          <button class="chip on"  data-v="none">없음</button>
+          <button class="chip"     data-v="pass">패스</button>
+          <button class="chip"     data-v="through">스루패스</button>
+          <button class="chip"     data-v="cross">크로스</button>
+          <button class="chip"     data-v="cutback">컷백</button>
+          <button class="chip"     data-v="rebound">리바운드</button>
+        </div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <!-- 수비 선수 -->
+      <div>
+        <div class="ctrl-label">슛 경로 내 수비 선수 수</div>
+        <div class="sl-row">
+          <input type="range" id="sl-def" min="0" max="5" step="1" value="0">
+          <span class="sl-val" id="val-def">0명</span>
+        </div>
+      </div>
+
+      <!-- 압박 강도 -->
+      <div>
+        <div class="ctrl-label">압박 강도 (슈터에게)</div>
+        <div class="chips" id="g-press">
+          <button class="chip on"  data-v="none">없음</button>
+          <button class="chip"     data-v="low">낮음</button>
+          <button class="chip"     data-v="medium">중간</button>
+          <button class="chip"     data-v="high">강함</button>
+        </div>
+      </div>
+
+      <!-- 슈팅 상태 -->
+      <div>
+        <div class="ctrl-label">슈팅 자세 / 상태</div>
+        <div class="chips" id="g-touch">
+          <button class="chip on"  data-v="controlled">컨트롤 슛</button>
+          <button class="chip"     data-v="first_touch">퍼스트터치</button>
+          <button class="chip"     data-v="falling">넘어지며</button>
+          <button class="chip"     data-v="big_chance">빅찬스</button>
+        </div>
+      </div>
+
+      <!-- 슈터 컨디션 (높을수록 좋음) -->
+      <div>
+        <div class="ctrl-label">슈터 컨디션</div>
+        <div class="sl-row">
+          <input type="range" id="sl-stamina" min="1" max="10" step="1" value="8">
+          <span class="sl-val" id="val-stamina">8</span>
+        </div>
+        <div class="condition-hint">
+          <span class="lo">1 — 극도로 지침</span>
+          <span style="color:var(--dim)">↑ 높을수록 컨디션 좋음 ↑</span>
+          <span class="hi">10 — 최상의 컨디션</span>
+        </div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <!-- 골키퍼 -->
+      <div>
+        <div class="ctrl-label">골키퍼 포지셔닝</div>
+        <div class="chips" id="g-gk">
+          <button class="chip on"  data-v="set">잘 위치함</button>
+          <button class="chip"     data-v="partial">부분 노출</button>
+          <button class="chip"     data-v="out">골라인 이탈</button>
+        </div>
+      </div>
+
+      <!-- 공 상태 -->
+      <div>
+        <div class="ctrl-label">공 상태</div>
+        <div class="chips" id="g-ball">
+          <button class="chip on"  data-v="ground">지상 볼</button>
+          <button class="chip"     data-v="bouncing">바운싱 볼</button>
+          <button class="chip"     data-v="aerial">공중 볼</button>
+        </div>
+      </div>
+
+      <!-- 슈터 속도 -->
+      <div>
+        <div class="ctrl-label">슈터 진입 속도</div>
+        <div class="chips" id="g-speed">
+          <button class="chip on"  data-v="static">정지</button>
+          <button class="chip"     data-v="slow">천천히</button>
+          <button class="chip"     data-v="fast">빠르게 (1:1 등)</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ RIGHT ══ -->
+  <div class="right-col">
+
+    <!-- xG Score -->
+    <div class="card xg-card">
+      <div class="xg-eye">Expected Goals</div>
+      <div id="xg-num">0.00</div>
+      <div class="xg-track"><div id="xg-fill"></div></div>
+      <div id="xg-verdict">–</div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="card">
+      <div class="card-title">Factor Breakdown (log-odds 기여)</div>
+      <div id="bd-list"></div>
+    </div>
+
+    <!-- Formula -->
+    <div class="card">
+      <div class="card-title">모델 수식</div>
+      <div class="formula">
+<span class="kw">xG</span> <span class="op">=</span> σ(<span class="vr">z</span>) <span class="op">=</span> 1/(1<span class="op">+</span>e<sup>−z</sup>)<br><br>
+<span class="vr">z</span> <span class="op">=</span> β₀ <span class="cm">// intercept</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(dist) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(angle) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(foot·skill) &nbsp;<span class="cm">// 주/비주발×숙련도</span><br>
+&nbsp;&nbsp;<span class="op">+</span> β · shot_type &nbsp;&nbsp;<span class="cm">// 무회전/감차/일반</span><br>
+&nbsp;&nbsp;<span class="op">+</span> β · motion &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 지상/발리/헤더</span><br>
+&nbsp;&nbsp;<span class="op">+</span> β · situation<br>
+&nbsp;&nbsp;<span class="op">+</span> β · assist_type<br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(defenders) &nbsp;<span class="cm">// 상한 있음</span><br>
+&nbsp;&nbsp;<span class="op">+</span> β · press_level<br>
+&nbsp;&nbsp;<span class="op">+</span> β · shot_quality<br>
+&nbsp;&nbsp;<span class="op">+</span> β · gk_position<br>
+&nbsp;&nbsp;<span class="op">+</span> β · ball_state<br>
+&nbsp;&nbsp;<span class="op">+</span> β · approach_speed<br>
+&nbsp;&nbsp;<span class="op">+</span> β · condition
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════
+//  좌표 상수 (viewBox 680 × 790)
+//  1px = 0.1m
+// ════════════════════════════════════
+const GOAL_Y  = 10;
+const GOAL_L  = 303;
+const GOAL_R  = 377;
+const GOAL_CX = 340;
+const PPM     = 10;
+
+const state = {
+  sx: 340, sy: 120,
+  dominant:  'right',    // 'right' | 'left'  — 주발
+  footUsed:  'dominant', // 'dominant' | 'weak'
+  skillWeak: 4,          // 비주발 숙련도 1-10 (주발은 항상 10)
+  shotType:  'normal',   // 'normal' | 'knuckleball' | 'finesse'
+  tech:      'ground',   // 'ground' | 'volley' | 'head'
+  sit:       'open_play',
+  assist:    'none',
+  def:       0,
+  press:     'none',
+  touch:     'controlled',
+  stamina:   8,
+  gk:        'set',
+  ball:      'ground',
+  speed:     'static',
+};
+
+// ─── dominant foot toggle ───
+function setDominant(side) {
+  state.dominant = side;
+  document.getElementById('btn-right').classList.toggle('active', side === 'right');
+  document.getElementById('btn-left').classList.toggle('active',  side === 'left');
+
+  // 주발/비주발 라벨 업데이트
+  const subTag = document.getElementById('sub-foot-tag');
+  const domChip  = document.getElementById('chip-dom-label');
+  const weakChip = document.getElementById('chip-weak-label');
+
+  if (side === 'right') {
+    subTag.textContent   = '왼발';
+    domChip.textContent  = '오른발 (주발)';
+    weakChip.textContent = '왼발 (비주발)';
+  } else {
+    subTag.textContent   = '오른발';
+    domChip.textContent  = '왼발 (주발)';
+    weakChip.textContent = '오른발 (비주발)';
+  }
+  render();
+}
+
+// ─── distance & angle ───
+function metrics() {
+  const dist  = Math.abs(state.sy - GOAL_Y) / PPM;
+  const gw    = (GOAL_R - GOAL_L) / PPM;
+  const dL    = Math.hypot(state.sx - GOAL_L, state.sy - GOAL_Y) / PPM;
+  const dR    = Math.hypot(state.sx - GOAL_R, state.sy - GOAL_Y) / PPM;
+  const cosA  = (dL*dL + dR*dR - gw*gw) / (2*dL*dR);
+  const angle = Math.acos(Math.min(1, Math.max(-1, cosA))) * 180 / Math.PI;
+  return { dist, angle };
+}
+
+// ════════════════════════════════════
+//  MODEL COEFFICIENTS
+// ════════════════════════════════════
+const B = {
+  intercept: -2.6,
+
+  dist(d) {
+    if (d <=  4) return  1.60;
+    if (d <=  7) return  1.60 - (d-4) * 0.25;
+    if (d <= 11) return  0.85 - (d-7) * 0.18;
+    if (d <= 16) return  0.13 - (d-11)* 0.10;
+    if (d <= 22) return -0.37 - (d-16)* 0.07;
+    if (d <= 32) return -0.79 - (d-22)* 0.04;
+    return Math.max(-1.40, -1.19 - (d-32)*0.02);
+  },
+
+  angle(a) {
+    if (a >= 40) return  1.10;
+    if (a >= 28) return  0.75;
+    if (a >= 18) return  0.35;
+    if (a >= 10) return  0.00;
+    if (a >=  5) return -0.25;
+    return -0.55;
+  },
+
+  // 발 사용: 주발은 skill=10 고정, 비주발은 skillWeak
+  foot(footUsed, skillWeak) {
+    if (footUsed === 'dominant') {
+      // 주발 skill 10 → 기준 +0.12 보너스
+      return 0.12;
+    } else {
+      // 비주발: skill 10 → 주발과 동일(-0.15 gap), skill 1 → -0.70
+      return -0.70 + (skillWeak / 10) * 0.55;
+    }
+  },
+
+  // 슛 종류: 일반=기준, 무회전=다소 어렵지만 골키퍼 방해, 감아차기=정확도↑
+  shotType: {
+    normal:      0.00,
+    knuckleball: -0.08,  // 궤적이 불규칙 — 어렵지만 GK에게도 어려움 → net 약간 감소
+    finesse:      0.14,  // 정확도 높은 마무리
+  },
+
+  // 슈팅 모션
+  tech: {
+    ground:  0.00,
+    volley: -0.32,
+    head:   -0.50,
+  },
+
+  sit: {
+    open_play:  0.00,
+    counter:    0.28,
+    set_piece: -0.20,
+    corner:    -0.48,
+    penalty:    9.99,
+  },
+
+  assist: {
+    none:      0.00,
+    pass:      0.14,
+    through:   0.35,
+    cross:    -0.10,
+    cutback:   0.45,
+    rebound:   0.50,
+  },
+
+  def(n) {
+    if (n === 0) return  0.00;
+    if (n === 1) return -0.22;
+    if (n === 2) return -0.40;
+    if (n === 3) return -0.54;
+    if (n === 4) return -0.68;
+    return -0.80;
+  },
+
+  press: {
+    none:    0.00,
+    low:    -0.12,
+    medium: -0.28,
+    high:   -0.52,
+  },
+
+  touch: {
+    controlled:   0.00,
+    first_touch:  -0.18,
+    falling:      -0.38,
+    big_chance:    0.55,
+  },
+
+  gk: {
+    set:      0.00,
+    partial:  0.48,
+    out:      1.40,
+  },
+
+  ball: {
+    ground:    0.00,
+    bouncing: -0.22,
+    aerial:   -0.35,
+  },
+
+  speed: {
+    static:  0.00,
+    slow:    0.08,
+    fast:    0.22,
+  },
+
+  // 컨디션: 높을수록 좋음. 10=+0.06, 8=0(기준), 1=-0.18
+  condition(s) {
+    return (s - 8) * 0.026;
+  },
+};
+
+function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
+function fmt(v)     { return (v >= 0 ? '+' : '') + v.toFixed(3); }
+function sgn(v)     { return v > 0.005 ? 'pos' : v < -0.005 ? 'neg' : 'neu'; }
+
+// ─── Calculate xG ───
+function calcXG() {
+  if (state.sit === 'penalty') {
+    return {
+      xg: 0.760,
+      rows: [{ k: '페널티킥 (고정값)', v: '0.760', c: 'neu' }],
+    };
+  }
+
+  const { dist, angle } = metrics();
+
+  const bd   = B.dist(dist);
+  const ba   = B.angle(angle);
+  const bf   = B.foot(state.footUsed, state.skillWeak);
+  const bst  = B.shotType[state.shotType];
+  const btc  = B.tech[state.tech];
+  const bs   = B.sit[state.sit];
+  const bast = B.assist[state.assist];
+  const bdef = B.def(state.def);
+  const bpr  = B.press[state.press];
+  const bto  = B.touch[state.touch];
+  const bgk  = B.gk[state.gk];
+  const bbl  = B.ball[state.ball];
+  const bsp  = B.speed[state.speed];
+  const bco  = B.condition(state.stamina);
+
+  const z = B.intercept + bd + ba + bf + bst + btc + bs + bast + bdef + bpr + bto + bgk + bbl + bsp + bco;
+  const xg = Math.min(0.97, Math.max(0.005, sigmoid(z)));
+
+  const dominantSide = state.dominant === 'right' ? '오른발' : '왼발';
+  const weakSide     = state.dominant === 'right' ? '왼발'   : '오른발';
+  const footLabel    = state.footUsed === 'dominant'
+    ? `${dominantSide} (주발, 숙련도 10)`
+    : `${weakSide} (비주발, 숙련도 ${state.skillWeak})`;
+
+  const shotTypeLabel = { normal: '일반슛', knuckleball: '무회전', finesse: '감아차기' }[state.shotType];
+  const techLabel     = { ground: '지상 슛', volley: '발리', head: '헤더' }[state.tech];
+
+  const rows = [
+    { k: `거리  ${dist.toFixed(1)}m`,                v: fmt(bd),   c: sgn(bd)   },
+    { k: `슈팅각도  ${angle.toFixed(1)}°`,            v: fmt(ba),   c: sgn(ba)   },
+    { k: `슈팅 발  (${footLabel})`,                   v: fmt(bf),   c: sgn(bf)   },
+    { k: `슛 종류  (${shotTypeLabel})`,               v: fmt(bst),  c: sgn(bst)  },
+    { k: `슈팅 모션  (${techLabel})`,                 v: fmt(btc),  c: sgn(btc)  },
+    { k: '상황',                                      v: fmt(bs),   c: sgn(bs)   },
+    { k: '어시스트 유형',                              v: fmt(bast), c: sgn(bast) },
+    { k: `수비 선수  ${state.def}명`,                 v: fmt(bdef), c: sgn(bdef) },
+    { k: '압박 강도',                                 v: fmt(bpr),  c: sgn(bpr)  },
+    { k: '슈팅 자세',                                 v: fmt(bto),  c: sgn(bto)  },
+    { k: '골키퍼 포지셔닝',                            v: fmt(bgk),  c: sgn(bgk)  },
+    { k: '공 상태',                                   v: fmt(bbl),  c: sgn(bbl)  },
+    { k: '진입 속도',                                 v: fmt(bsp),  c: sgn(bsp)  },
+    { k: `컨디션  (${state.stamina}/10)`,             v: fmt(bco),  c: sgn(bco)  },
+    { k: 'z합계  →  σ(z)',   v: z.toFixed(3) + ' → ' + xg.toFixed(4), c: 'neu' },
+  ];
+
+  return { xg, rows };
+}
+
+function xgColor(xg) {
+  if (xg >= 0.45) return '#00e676';
+  if (xg >= 0.25) return '#ffab00';
+  if (xg >= 0.10) return '#ff9100';
+  return '#f2415a';
+}
+
+function xgVerdict(xg) {
+  if (xg >= 0.65) return '★ 빅 찬스';
+  if (xg >= 0.45) return '◈ 좋은 기회';
+  if (xg >= 0.25) return '◇ 평균적 찬스';
+  if (xg >= 0.10) return '· 낮은 확률';
+  return '○ 매우 어려운 슛';
+}
+
+// ─── Render ───
+function render() {
+  const { xg, rows } = calcXG();
+  const col = xgColor(xg);
+
+  const num = document.getElementById('xg-num');
+  num.textContent  = xg.toFixed(2);
+  num.style.color  = col;
+  num.style.textShadow = `0 0 60px ${col}44`;
+
+  document.getElementById('xg-fill').style.width      = (xg * 100) + '%';
+  document.getElementById('xg-fill').style.background = col;
+
+  const vrd = document.getElementById('xg-verdict');
+  vrd.textContent = xgVerdict(xg);
+  vrd.style.color = col;
+
+  document.getElementById('bd-list').innerHTML = rows.map(r =>
+    `<div class="bd-row">
+       <span class="bd-key">${r.k}</span>
+       <span class="bd-val ${r.c}">${r.v}</span>
+     </div>`
+  ).join('');
+
+  // pitch markers
+  const sx = state.sx, sy = state.sy;
+  document.getElementById('shot-dot').setAttribute('cx', sx);
+  document.getElementById('shot-dot').setAttribute('cy', sy);
+  document.getElementById('shot-ring').setAttribute('cx', sx);
+  document.getElementById('shot-ring').setAttribute('cy', sy);
+  document.getElementById('ang-l').setAttribute('x1', sx);
+  document.getElementById('ang-l').setAttribute('y1', sy);
+  document.getElementById('ang-r').setAttribute('x1', sx);
+  document.getElementById('ang-r').setAttribute('y1', sy);
+
+  const { dist } = metrics();
+  const dl = document.getElementById('dist-lbl');
+  dl.setAttribute('x', sx + 13);
+  dl.setAttribute('y', sy - 6);
+  dl.textContent = dist.toFixed(1) + 'm';
+}
+
+// ─── Pitch click with animation ───
+document.getElementById('pitch-svg').addEventListener('click', e => {
+  const r  = e.currentTarget.getBoundingClientRect();
+  state.sx = Math.min(665, Math.max(15, (e.clientX - r.left) * (680 / r.width)));
+  state.sy = Math.min(780, Math.max(12, (e.clientY - r.top)  * (790 / r.height)));
+
+  // Trigger animation
+  const dot  = document.getElementById('shot-dot');
+  const ring = document.getElementById('shot-ring');
+  dot.classList.remove('dot-animate');
+  ring.classList.remove('ring-animate');
+  // Force reflow so animation restarts
+  void dot.getBoundingClientRect();
+  dot.classList.add('dot-animate');
+  ring.classList.add('ring-animate');
+
+  render();
+
+  // Clean up classes after animation
+  setTimeout(() => {
+    dot.classList.remove('dot-animate');
+    ring.classList.remove('ring-animate');
+  }, 400);
+});
+
+// ─── Chips ───
+function bindChips(id, key) {
+  const g = document.getElementById(id);
+  g.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      g.querySelectorAll('.chip').forEach(x => x.classList.remove('on', 'on-amber'));
+      c.classList.add('on');
+      state[key] = c.dataset.v;
+      render();
+    });
+  });
+}
+bindChips('g-foot',     'footUsed');
+bindChips('g-shottype', 'shotType');
+bindChips('g-tech',     'tech');
+bindChips('g-sit',      'sit');
+bindChips('g-assist',   'assist');
+bindChips('g-press',    'press');
+bindChips('g-touch',    'touch');
+bindChips('g-gk',       'gk');
+bindChips('g-ball',     'ball');
+bindChips('g-speed',    'speed');
+
+// ─── Sliders ───
+function bindSlider(id, valId, key, suffix, cb) {
+  const sl = document.getElementById(id);
+  const vl = document.getElementById(valId);
+  sl.addEventListener('input', () => {
+    state[key] = +sl.value;
+    vl.textContent = sl.value + (suffix || '');
+    if (cb) cb();
+    render();
+  });
+}
+bindSlider('sl-weak',    'val-weak',    'skillWeak', '');
+bindSlider('sl-def',     'val-def',     'def',       '명');
+bindSlider('sl-stamina', 'val-stamina', 'stamina',   '');
+
+render();
+  // ─── Save as Image ───
+document.getElementById('btn-save').addEventListener('click', function() {
+  const btn = this;
+  const originalText = btn.textContent;
+  
+  // 버튼 클릭 피드백
+  btn.textContent = '⏳ 저장 중...';
+  btn.style.background = '#00e676';
+  btn.style.color = '#060a0d';
+
+  // 캡처할 대상 요소를 선택 (전체 레이아웃)
+  const targetElement = document.querySelector('.layout');
+
+  // html2canvas 실행
+  html2canvas(targetElement, {
+    backgroundColor: '#060a0d', // 캡처 시 배경색 지정 (네 테마 배경색)
+    scale: 2, // 화질을 2배로 올려서 텍스트 깨짐 방지
+    logging: false
+  }).then(canvas => {
+    // 캔버스를 이미지 데이터 URL로 변환
+    const imgData = canvas.toDataURL('image/png');
+    
+    // 가상의 다운로드 링크 생성 후 클릭 이벤트 발생
+    const link = document.createElement('a');
+    link.download = `xG_Report_${new Date().getTime()}.png`; // 파일명에 타임스탬프 추가
+    link.href = imgData;
+    link.click();
+
+    // 버튼 원상복구
+    btn.textContent = originalText;
+    btn.style.background = 'rgba(0,230,118,0.12)';
+    btn.style.color = '#00e676';
+  }).catch(err => {
+    console.error('캡처 실패:', err);
+    btn.textContent = '❌ 저장 실패';
+    setTimeout(() => { btn.textContent = originalText; }, 2000);
+  });
+});
+
+</script>
+</body>
+</html>
