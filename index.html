@@ -640,7 +640,7 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
       <div class="formula">
 <span class="kw">xG</span> <span class="op">=</span> σ(<span class="vr">z</span>) <span class="op">=</span> 1/(1<span class="op">+</span>e<sup>−z</sup>)<br><br>
 <span class="vr">z</span> <span class="op">=</span> β₀ <span class="cm">// intercept</span><br>
-&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(dist) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>() &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(angle) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(foot·skill) &nbsp;<span class="cm">// 주/비주발×숙련도</span><br>
 &nbsp;&nbsp;<span class="op">+</span> β · shot_type &nbsp;&nbsp;<span class="cm">// 무회전/감차/일반</span><br>
@@ -730,14 +730,17 @@ const B = {
   intercept: -2.6,
 
   dist(d) {
-    if (d <=  4) return  1.60;
-    if (d <=  7) return  1.60 - (d-4) * 0.25;
-    if (d <= 11) return  0.85 - (d-7) * 0.18;
-    if (d <= 16) return  0.13 - (d-11)* 0.10;
-    if (d <= 22) return -0.37 - (d-16)* 0.07;
-    if (d <= 32) return -0.79 - (d-22)* 0.04;
-    return Math.max(-1.40, -1.19 - (d-32)*0.02);
-  },
+  // 5m 이내는 거의 득점 확률이 50~80% 이상 나와야 하므로 계수를 대폭 상향
+  if (d <= 3)  return 2.80; 
+  if (d <= 5)  return 2.30;
+  if (d <= 8)  return 1.40;
+  if (d <= 12) return 0.60;
+  if (d <= 16) return 0.10;
+  if (d <= 22) return -0.50;
+  if (d <= 30) return -1.20;
+  return -1.80; // 중거리 슛은 자비 없음
+},
+
 
   angle(a) {
     if (a >= 40) return  1.10;
@@ -800,11 +803,11 @@ const B = {
   },
 
   press: {
-    none:    0.00,
-    low:    -0.12,
-    medium: -0.28,
-    high:   -0.52,
-  },
+  none:   0.45,   // 압박 없으면 '보너스'를 줘서 확 올림
+  low:    0.00,   // 기준점
+  medium: -0.55,  // 몸싸움 시작되면 확 깎임
+  high:   -0.85,  // 숨도 못 쉬는 압박
+},
 
   touch: {
     controlled:   0.00,
