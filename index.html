@@ -35,7 +35,7 @@ body {
 }
 
 /* ─── HEADER ─── */
-header { text-align:center; margin-bottom:36px; }
+header { text-align:center; margin-bottom:28px; }
 header h1 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(44px,6.5vw,76px);
@@ -51,7 +51,36 @@ header p {
   color: var(--dim2);
   margin-top: 6px;
 }
-  
+
+/* ─── MODE TOGGLE ─── */
+.mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 14px auto 0;
+  width: fit-content;
+}
+.mode-btn {
+  padding: 8px 28px;
+  background: transparent;
+  border: none;
+  color: var(--dim2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-right: 1px solid var(--border);
+}
+.mode-btn:last-child { border-right: none; }
+.mode-btn.active {
+  background: rgba(0,230,118,0.12);
+  color: var(--green);
+}
 
 /* ─── LAYOUT ─── */
 .layout {
@@ -94,7 +123,6 @@ header p {
 #pitch-svg {
   display: block;
   width: 100%;
-  aspect-ratio: 680 / 790;
   height: auto;
   cursor: crosshair;
   border-radius: 4px;
@@ -112,12 +140,8 @@ header p {
   60%  { r: 22; opacity: 0.15; }
   100% { r: 15; opacity: 0.3; }
 }
-.dot-animate {
-  animation: dotPop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
-.ring-animate {
-  animation: ringPulse 0.35s cubic-bezier(0.22,1,0.36,1) forwards;
-}
+.dot-animate { animation: dotPop 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.ring-animate { animation: ringPulse 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
 
 /* ─── CONTROLS ─── */
 .ctrl-stack { display:flex; flex-direction:column; gap:14px; }
@@ -130,7 +154,6 @@ header p {
   margin-bottom: 7px;
 }
 
-/* foot toggle — main/sub */
 .foot-switch {
   display: flex;
   align-items: center;
@@ -167,44 +190,17 @@ header p {
   background: rgba(0,230,118,0.12);
   color: var(--green);
 }
-.foot-badge {
-  font-size: 8px;
-  padding: 2px 7px;
-  border-radius: 3px;
-  letter-spacing: 1px;
-}
-.foot-badge.main {
-  background: rgba(0,230,118,0.12);
-  color: var(--green);
-  border: 1px solid rgba(0,230,118,0.3);
-}
-.foot-badge.sub {
-  background: rgba(255,171,0,0.10);
-  color: var(--amber);
-  border: 1px solid rgba(255,171,0,0.3);
-}
 
-/* skill bar */
-.skill-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.skill-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.skill-section { display:flex; flex-direction:column; gap:8px; }
+.skill-row { display:flex; align-items:center; gap:10px; }
 .skill-foot-tag {
   font-size: 8.5px;
   letter-spacing: 1px;
   min-width: 30px;
   color: var(--dim2);
 }
-.skill-foot-tag.main { color: var(--green); }
-.skill-foot-tag.sub  { color: var(--amber); }
+.skill-foot-tag.sub { color: var(--amber); }
 
-/* chips */
 .chips { display:flex; flex-wrap:wrap; gap:5px; }
 .chip {
   padding: 5px 11px;
@@ -225,13 +221,7 @@ header p {
   border-color: var(--green);
   color: var(--green);
 }
-.chip.on-amber {
-  background: rgba(255,171,0,0.09);
-  border-color: var(--amber);
-  color: var(--amber);
-}
 
-/* sliders */
 .sl-row { display:flex; align-items:center; gap:10px; }
 input[type=range] {
   -webkit-appearance: none;
@@ -251,15 +241,9 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
 }
 input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-shadow: 0 0 6px rgba(255,171,0,0.4); }
-.sl-val {
-  font-size: 11px;
-  color: var(--green);
-  min-width: 28px;
-  text-align: right;
-}
+.sl-val { font-size: 11px; color: var(--green); min-width: 28px; text-align: right; }
 .sl-val.amber { color: var(--amber); }
 
-/* condition hint */
 .condition-hint {
   display: flex;
   justify-content: space-between;
@@ -275,7 +259,6 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
 /* ─── RIGHT COLUMN ─── */
 .right-col { display:flex; flex-direction:column; gap:12px; }
 
-/* xG display */
 .xg-card { text-align:center; padding:24px 18px 20px; }
 .xg-eye {
   font-size: 8px;
@@ -311,7 +294,6 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
   transition: color 0.2s;
 }
 
-/* breakdown */
 .bd-row {
   display: flex;
   justify-content: space-between;
@@ -328,7 +310,6 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
 .bd-val.neg { color: var(--red); }
 .bd-val.neu { color: var(--text); }
 
-/* formula */
 .formula {
   background: #040709;
   border: 1px solid var(--border);
@@ -343,13 +324,37 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
 .formula .vr { color: var(--text); }
 .formula .cm { color: var(--dim); }
 
-/* divider inside ctrl */
 .ctrl-divider {
   height: 1px;
   background: var(--border);
   margin: 2px 0;
   opacity: 0.5;
 }
+
+/* ─── MODE BADGE ─── */
+.mode-badge {
+  display: inline-block;
+  font-size: 8px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  border: 1px solid;
+}
+.mode-badge.soccer {
+  background: rgba(0,230,118,0.08);
+  color: var(--green);
+  border-color: rgba(0,230,118,0.3);
+}
+.mode-badge.futsal {
+  background: rgba(64,196,255,0.08);
+  color: var(--blue);
+  border-color: rgba(64,196,255,0.3);
+}
+
+/* futsal pitch color tweaks */
+body.futsal-mode #pitch-svg .pitch-bg { fill: #0a1a2a; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -358,96 +363,132 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
 <header>
   <h1>x<em>G</em> ENGINE</h1>
   <p>Expected Goals · Advanced Multi-Variable Logistic Regression</p>
-  <header>
-  <h1>x<em>G</em> ENGINE</h1>
-  <p>Expected Goals · Advanced Multi-Variable Logistic Regression</p>
-  <button id="btn-save" style="margin-top: 15px; padding: 8px 16px; background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid #00e676; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s;">📸 리포트 이미지로 저장</button>
-</header>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-mode-soccer" onclick="setMode('soccer')">⚽ 축구</button>
+    <button class="mode-btn" id="btn-mode-futsal" onclick="setMode('futsal')">🏟 풋살</button>
+  </div>
+  <div style="margin-top:12px;">
+    <button id="btn-save" style="padding: 8px 16px; background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid #00e676; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s;">📸 리포트 이미지로 저장</button>
+  </div>
 </header>
 
 <div class="layout">
 
   <!-- ══ LEFT ══ -->
   <div class="card">
-    <div class="card-title">슛 위치 — 클릭하여 배치 (위쪽 = 공격 골문)</div>
+    <div class="card-title" id="pitch-label">슛 위치 — 클릭하여 배치 (위쪽 = 공격 골문) · 축구장</div>
 
     <div id="pitch-wrap">
-      <svg id="pitch-svg" viewBox="0 0 680 790" xmlns="http://www.w3.org/2000/svg">
-        <!-- grass stripes -->
+      <!-- ═══ SOCCER PITCH ═══ -->
+      <svg id="pitch-svg-soccer" viewBox="0 0 680 790" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;cursor:crosshair;border-radius:4px;">
         <rect width="680" height="790" fill="#0c1f0f"/>
         <rect x="0"   width="68"  height="790" fill="#081508" opacity="0.5"/>
         <rect x="136" width="68"  height="790" fill="#081508" opacity="0.5"/>
         <rect x="272" width="68"  height="790" fill="#081508" opacity="0.5"/>
         <rect x="408" width="68"  height="790" fill="#081508" opacity="0.5"/>
         <rect x="544" width="68"  height="790" fill="#081508" opacity="0.5"/>
-
-        <!-- pitch outline -->
         <rect x="10" y="10" width="660" height="770" fill="none" stroke="#2a5c3a" stroke-width="2"/>
-
-        <!-- half line -->
         <line x1="10" y1="535" x2="670" y2="535" stroke="#2a5c3a" stroke-width="1.5"/>
-
-        <!-- center circle -->
         <circle cx="340" cy="535" r="91.5" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
         <circle cx="340" cy="535" r="4" fill="#2a5c3a"/>
-
-        <!-- ── ATTACK HALF (top) ── -->
-        <rect x="138" y="10" width="404" height="165"
-              fill="rgba(0,230,118,0.02)" stroke="#2a5c3a" stroke-width="1.5"/>
-        <rect x="248" y="10" width="184" height="55"
-              fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <rect x="138" y="10" width="404" height="165" fill="rgba(0,230,118,0.02)" stroke="#2a5c3a" stroke-width="1.5"/>
+        <rect x="248" y="10" width="184" height="55" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
         <circle cx="340" cy="120" r="3.5" fill="#3a7c50"/>
-        <clipPath id="arc-clip">
-          <rect x="0" y="175" width="680" height="360"/>
-        </clipPath>
+        <clipPath id="arc-clip"><rect x="0" y="175" width="680" height="360"/></clipPath>
         <circle cx="340" cy="120" r="91.5" fill="none" stroke="#2a5c3a" stroke-width="1.5" clip-path="url(#arc-clip)"/>
-        <!-- goal -->
         <rect x="303" y="0" width="74" height="12" fill="none" stroke="#00e676" stroke-width="2.5"/>
         <line x1="10" y1="10" x2="670" y2="10" stroke="#3a7050" stroke-width="1.8"/>
-
-        <!-- ── DEFENSE HALF (bottom, faded) ── -->
-        <rect x="138" y="625" width="404" height="165"
-              fill="none" stroke="#1a3a22" stroke-width="1"/>
-        <rect x="248" y="680" width="184" height="55"
-              fill="none" stroke="#1a3a22" stroke-width="1"/>
+        <rect x="138" y="625" width="404" height="165" fill="none" stroke="#1a3a22" stroke-width="1"/>
+        <rect x="248" y="680" width="184" height="55" fill="none" stroke="#1a3a22" stroke-width="1"/>
         <circle cx="340" cy="680" r="3.5" fill="#1a3a22"/>
-        <clipPath id="arc-clip2">
-          <rect x="0" y="0" width="680" height="625"/>
-        </clipPath>
+        <clipPath id="arc-clip2"><rect x="0" y="0" width="680" height="625"/></clipPath>
         <circle cx="340" cy="680" r="91.5" fill="none" stroke="#1a3a22" stroke-width="1" clip-path="url(#arc-clip2)"/>
         <rect x="303" y="778" width="74" height="12" fill="none" stroke="#1a3a22" stroke-width="1"/>
         <line x1="10" y1="780" x2="670" y2="780" stroke="#1a3a22" stroke-width="1.5"/>
-
-        <!-- corners -->
         <path d="M10 10  Q22 10  22 22"  fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
         <path d="M670 10 Q658 10 658 22" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
         <path d="M10 780  Q22 780  22 768"  fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
         <path d="M670 780 Q658 780 658 768" fill="none" stroke="#2a5c3a" stroke-width="1.5"/>
+        <!-- angle guides -->
+        <line id="s-ang-l" x1="340" y1="120" x2="303" y2="10" stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
+        <line id="s-ang-r" x1="340" y1="120" x2="377" y2="10" stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
+        <!-- shot marker -->
+        <circle id="s-shot-ring" cx="340" cy="120" r="15" fill="none" stroke="#00e676" stroke-width="1.5" opacity="0.3"/>
+        <circle id="s-shot-dot"  cx="340" cy="120" r="7"  fill="#00e676" opacity="0.93" style="filter:drop-shadow(0 0 8px #00e676)"/>
+        <text id="s-dist-lbl" x="355" y="116" fill="#00e676" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600" opacity="0.8"></text>
+      </svg>
 
-        <!-- shot angle guide lines -->
-        <line id="ang-l" x1="340" y1="120" x2="303" y2="10"
-              stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
-        <line id="ang-r" x1="340" y1="120" x2="377" y2="10"
-              stroke="#00e676" stroke-width="1" opacity="0.2" stroke-dasharray="6,4"/>
+      <!-- ═══ FUTSAL PITCH ═══
+           실제 풋살 코트: 40m × 20m
+           viewBox: 520 × 280 (1px = 약 0.077m, scale: 13px/m)
+           골 너비 3m → 39px, 골 에어리어: 6m radius
+           페널티 스폿: 6m
+      -->
+      <svg id="pitch-svg-futsal" viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" style="display:none;width:100%;height:auto;cursor:crosshair;border-radius:4px;">
+        <!-- background -->
+        <rect width="520" height="280" fill="#0a1828"/>
+        <!-- stripes -->
+        <rect x="0"   width="52"  height="280" fill="#061020" opacity="0.5"/>
+        <rect x="104" width="52"  height="280" fill="#061020" opacity="0.5"/>
+        <rect x="208" width="52"  height="280" fill="#061020" opacity="0.5"/>
+        <rect x="312" width="52"  height="280" fill="#061020" opacity="0.5"/>
+        <rect x="416" width="52"  height="280" fill="#061020" opacity="0.5"/>
+
+        <!-- pitch outline -->
+        <rect x="10" y="10" width="500" height="260" fill="none" stroke="#1a4060" stroke-width="2"/>
+
+        <!-- half line -->
+        <line x1="260" y1="10" x2="260" y2="270" stroke="#1a4060" stroke-width="1.5"/>
+
+        <!-- center circle (3m radius → 39px) -->
+        <circle cx="260" cy="140" r="39" fill="none" stroke="#1a4060" stroke-width="1.5"/>
+        <circle cx="260" cy="140" r="4"  fill="#1a4060"/>
+
+        <!-- ── ATTACK GOAL (left) ── -->
+        <!-- goal area: 6m radius semicircle from goal center -->
+        <!-- goal center: (10, 140), goal posts: (10, 121) and (10, 159) [3m = 38px each side ~19px] -->
+        <!-- goal area D: 6m = 78px radius -->
+        <clipPath id="f-arc-clip">
+          <rect x="88" y="0" width="500" height="280"/>
+        </clipPath>
+        <circle cx="10" cy="140" r="78" fill="rgba(64,196,255,0.03)" stroke="#1a4060" stroke-width="1.5" clip-path="url(f-arc-clip)"/>
+
+        <!-- penalty spot (6m = 78px from goal line) -->
+        <circle cx="88" cy="140" r="3" fill="#2a5070"/>
+
+        <!-- goal mouth -->
+        <rect x="0" y="121" width="10" height="38" fill="none" stroke="#40c4ff" stroke-width="2.5"/>
+        <line x1="10" y1="10" x2="10" y2="270" stroke="#204050" stroke-width="1.8"/>
+
+        <!-- ── DEFENSE GOAL (right, faded) ── -->
+        <clipPath id="f-arc-clip2">
+          <rect x="0" y="0" width="432" height="280"/>
+        </clipPath>
+        <circle cx="510" cy="140" r="78" fill="none" stroke="#102030" stroke-width="1" clip-path="url(f-arc-clip2)"/>
+        <circle cx="432" cy="140" r="3" fill="#102030"/>
+        <rect x="510" y="121" width="10" height="38" fill="none" stroke="#102030" stroke-width="1"/>
+        <line x1="510" y1="10" x2="510" y2="270" stroke="#102030" stroke-width="1.5"/>
+
+        <!-- corners -->
+        <path d="M10 10  Q18 10  18 18"  fill="none" stroke="#1a4060" stroke-width="1.5"/>
+        <path d="M510 10 Q502 10 502 18" fill="none" stroke="#1a4060" stroke-width="1.5"/>
+        <path d="M10 270  Q18 270  18 262"  fill="none" stroke="#1a4060" stroke-width="1.5"/>
+        <path d="M510 270 Q502 270 502 262" fill="none" stroke="#1a4060" stroke-width="1.5"/>
+
+        <!-- angle guides -->
+        <line id="f-ang-l" x1="88" y1="140" x2="10" y2="121" stroke="#40c4ff" stroke-width="1" opacity="0.2" stroke-dasharray="5,3"/>
+        <line id="f-ang-r" x1="88" y1="140" x2="10" y2="159" stroke="#40c4ff" stroke-width="1" opacity="0.2" stroke-dasharray="5,3"/>
 
         <!-- shot marker -->
-        <circle id="shot-ring" cx="340" cy="120" r="15"
-                fill="none" stroke="#00e676" stroke-width="1.5" opacity="0.3"/>
-        <circle id="shot-dot"  cx="340" cy="120" r="7"
-                fill="#00e676" opacity="0.93"
-                style="filter:drop-shadow(0 0 8px #00e676)"/>
-
-        <!-- distance label -->
-        <text id="dist-lbl" x="355" y="116"
-              fill="#00e676" font-size="13" font-family="JetBrains Mono,monospace"
-              font-weight="600" opacity="0.8"></text>
+        <circle id="f-shot-ring" cx="88" cy="140" r="12" fill="none" stroke="#40c4ff" stroke-width="1.5" opacity="0.3"/>
+        <circle id="f-shot-dot"  cx="88" cy="140" r="6"  fill="#40c4ff" opacity="0.93" style="filter:drop-shadow(0 0 8px #40c4ff)"/>
+        <text id="f-dist-lbl" x="100" y="136" fill="#40c4ff" font-size="11" font-family="JetBrains Mono,monospace" font-weight="600" opacity="0.8"></text>
       </svg>
     </div>
 
     <!-- ── Controls ── -->
     <div class="ctrl-stack">
 
-      <!-- 오른발 / 왼발 주발 선택 -->
       <div>
         <div class="ctrl-label">주발 설정</div>
         <div class="foot-switch">
@@ -459,7 +500,6 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
         </div>
       </div>
 
-      <!-- 비주발 숙련도 -->
       <div>
         <div class="ctrl-label">비주발 숙련도</div>
         <div class="skill-section">
@@ -475,69 +515,61 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
         </div>
       </div>
 
-      <!-- 슈팅 발 선택 -->
       <div>
         <div class="ctrl-label">슈팅 발</div>
         <div class="chips" id="g-foot">
-          <button class="chip on" data-v="dominant">
-            <span id="chip-dom-label">오른발 (주발)</span>
-          </button>
-          <button class="chip" data-v="weak">
-            <span id="chip-weak-label">왼발 (비주발)</span>
-          </button>
+          <button class="chip on" data-v="dominant"><span id="chip-dom-label">오른발 (주발)</span></button>
+          <button class="chip"    data-v="weak"><span id="chip-weak-label">왼발 (비주발)</span></button>
         </div>
       </div>
 
-      <!-- 슛 종류 -->
       <div>
         <div class="ctrl-label">슛 종류</div>
         <div class="chips" id="g-shottype">
-          <button class="chip on"  data-v="normal">일반슛</button>
-          <button class="chip"     data-v="knuckleball">무회전</button>
-          <button class="chip"     data-v="finesse">감아차기</button>
+          <button class="chip on" data-v="normal">일반슛</button>
+          <button class="chip"    data-v="knuckleball">무회전</button>
+          <button class="chip"    data-v="finesse">감아차기</button>
         </div>
       </div>
 
-      <!-- 슈팅 자세 (기존 tech에서 분리) -->
       <div>
         <div class="ctrl-label">슈팅 모션</div>
         <div class="chips" id="g-tech">
-          <button class="chip on"  data-v="ground">지상 슛</button>
-          <button class="chip"     data-v="volley">발리</button>
-          <button class="chip"     data-v="head">헤더</button>
+          <button class="chip on" data-v="ground">지상 슛</button>
+          <button class="chip"    data-v="volley">발리</button>
+          <button class="chip"    data-v="head">헤더</button>
         </div>
       </div>
 
       <div class="ctrl-divider"></div>
 
-      <!-- 상황 -->
       <div>
         <div class="ctrl-label">상황</div>
         <div class="chips" id="g-sit">
-          <button class="chip on"  data-v="open_play">오픈플레이</button>
-          <button class="chip"     data-v="counter">카운터</button>
-          <button class="chip"     data-v="set_piece">프리킥</button>
-          <button class="chip"     data-v="corner">코너킥</button>
-          <button class="chip"     data-v="penalty">페널티킥</button>
+          <button class="chip on" data-v="open_play">오픈플레이</button>
+          <button class="chip"    data-v="counter">카운터</button>
+          <button class="chip"    data-v="set_piece">프리킥</button>
+          <!-- futsal-only chips hidden in soccer -->
+          <button class="chip"    data-v="corner" id="chip-corner">코너킥</button>
+          <button class="chip"    data-v="penalty">페널티킥</button>
+          <button class="chip futsal-only" data-v="kickin" id="chip-kickin" style="display:none;">킥인</button>
         </div>
       </div>
 
-      <!-- 어시스트 -->
       <div>
         <div class="ctrl-label">어시스트 유형</div>
         <div class="chips" id="g-assist">
-          <button class="chip on"  data-v="none">없음</button>
-          <button class="chip"     data-v="pass">패스</button>
-          <button class="chip"     data-v="through">스루패스</button>
-          <button class="chip"     data-v="cross">크로스</button>
-          <button class="chip"     data-v="cutback">컷백</button>
-          <button class="chip"     data-v="rebound">리바운드</button>
+          <button class="chip on" data-v="none">없음</button>
+          <button class="chip"    data-v="pass">패스</button>
+          <button class="chip"    data-v="through">스루패스</button>
+          <button class="chip"    data-v="cross">크로스</button>
+          <button class="chip"    data-v="cutback">컷백</button>
+          <button class="chip"    data-v="rebound">리바운드</button>
         </div>
       </div>
 
       <div class="ctrl-divider"></div>
 
-      <!-- 수비 선수 -->
       <div>
         <div class="ctrl-label">슛 경로 내 수비 선수 수</div>
         <div class="sl-row">
@@ -546,29 +578,26 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
         </div>
       </div>
 
-      <!-- 압박 강도 -->
       <div>
-        <div class="ctrl-label">압박 강도 (슈터에게)</div>
+        <div class="ctrl-label">압박 강도</div>
         <div class="chips" id="g-press">
-          <button class="chip on"  data-v="none">없음</button>
-          <button class="chip"     data-v="low">낮음</button>
-          <button class="chip"     data-v="medium">중간</button>
-          <button class="chip"     data-v="high">강함</button>
+          <button class="chip on" data-v="none">없음</button>
+          <button class="chip"    data-v="low">낮음</button>
+          <button class="chip"    data-v="medium">중간</button>
+          <button class="chip"    data-v="high">강함</button>
         </div>
       </div>
 
-      <!-- 슈팅 상태 -->
       <div>
         <div class="ctrl-label">슈팅 자세 / 상태</div>
         <div class="chips" id="g-touch">
-          <button class="chip on"  data-v="controlled">컨트롤 슛</button>
-          <button class="chip"     data-v="first_touch">퍼스트터치</button>
-          <button class="chip"     data-v="falling">넘어지며</button>
-          <button class="chip"     data-v="big_chance">빅찬스</button>
+          <button class="chip on" data-v="controlled">컨트롤 슛</button>
+          <button class="chip"    data-v="first_touch">퍼스트터치</button>
+          <button class="chip"    data-v="falling">넘어지며</button>
+          <button class="chip"    data-v="big_chance">빅찬스</button>
         </div>
       </div>
 
-      <!-- 슈터 컨디션 (높을수록 좋음) -->
       <div>
         <div class="ctrl-label">슈터 컨디션</div>
         <div class="sl-row">
@@ -577,40 +606,37 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
         </div>
         <div class="condition-hint">
           <span class="lo">1 — 극도로 지침</span>
-          <span style="color:var(--dim)">↑ 높을수록 컨디션 좋음 ↑</span>
-          <span class="hi">10 — 최상의 컨디션</span>
+          <span style="color:var(--dim)">↑ 높을수록 좋음 ↑</span>
+          <span class="hi">10 — 최상 컨디션</span>
         </div>
       </div>
 
       <div class="ctrl-divider"></div>
 
-      <!-- 골키퍼 -->
       <div>
         <div class="ctrl-label">골키퍼 포지셔닝</div>
         <div class="chips" id="g-gk">
-          <button class="chip on"  data-v="set">잘 위치함</button>
-          <button class="chip"     data-v="partial">부분 노출</button>
-          <button class="chip"     data-v="out">골라인 이탈</button>
+          <button class="chip on" data-v="set">잘 위치함</button>
+          <button class="chip"    data-v="partial">부분 노출</button>
+          <button class="chip"    data-v="out">골라인 이탈</button>
         </div>
       </div>
 
-      <!-- 공 상태 -->
       <div>
         <div class="ctrl-label">공 상태</div>
         <div class="chips" id="g-ball">
-          <button class="chip on"  data-v="ground">지상 볼</button>
-          <button class="chip"     data-v="bouncing">바운싱 볼</button>
-          <button class="chip"     data-v="aerial">공중 볼</button>
+          <button class="chip on" data-v="ground">지상 볼</button>
+          <button class="chip"    data-v="bouncing">바운싱 볼</button>
+          <button class="chip"    data-v="aerial">공중 볼</button>
         </div>
       </div>
 
-      <!-- 슈터 속도 -->
       <div>
         <div class="ctrl-label">슈터 진입 속도</div>
         <div class="chips" id="g-speed">
-          <button class="chip on"  data-v="static">정지</button>
-          <button class="chip"     data-v="slow">천천히</button>
-          <button class="chip"     data-v="fast">빠르게 (1:1 등)</button>
+          <button class="chip on" data-v="static">정지</button>
+          <button class="chip"    data-v="slow">천천히</button>
+          <button class="chip"    data-v="fast">빠르게 (1:1 등)</button>
         </div>
       </div>
 
@@ -620,7 +646,6 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
   <!-- ══ RIGHT ══ -->
   <div class="right-col">
 
-    <!-- xG Score -->
     <div class="card xg-card">
       <div class="xg-eye">Expected Goals</div>
       <div id="xg-num">0.00</div>
@@ -628,23 +653,21 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
       <div id="xg-verdict">–</div>
     </div>
 
-    <!-- Breakdown -->
     <div class="card">
       <div class="card-title">Factor Breakdown (log-odds 기여)</div>
       <div id="bd-list"></div>
     </div>
 
-    <!-- Formula -->
     <div class="card">
       <div class="card-title">모델 수식</div>
       <div class="formula">
 <span class="kw">xG</span> <span class="op">=</span> σ(<span class="vr">z</span>) <span class="op">=</span> 1/(1<span class="op">+</span>e<sup>−z</sup>)<br><br>
-<span class="vr">z</span> <span class="op">=</span> β₀ <span class="cm">// intercept</span><br>
-&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>() &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
+<span class="vr">z</span> <span class="op">=</span> β0 <span class="cm">// intercept</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(dist) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(angle) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(foot·skill) &nbsp;<span class="cm">// 주/비주발×숙련도</span><br>
-&nbsp;&nbsp;<span class="op">+</span> β · shot_type &nbsp;&nbsp;<span class="cm">// 무회전/감차/일반</span><br>
-&nbsp;&nbsp;<span class="op">+</span> β · motion &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 지상/발리/헤더</span><br>
+&nbsp;&nbsp;<span class="op">+</span> β · shot_type<br>
+&nbsp;&nbsp;<span class="op">+</span> β · motion<br>
 &nbsp;&nbsp;<span class="op">+</span> β · situation<br>
 &nbsp;&nbsp;<span class="op">+</span> β · assist_type<br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(defenders) &nbsp;<span class="cm">// 상한 있음</span><br>
@@ -661,23 +684,37 @@ input[type=range].amber::-webkit-slider-thumb { background: var(--amber); box-sh
 </div>
 
 <script>
-// ════════════════════════════════════
-//  좌표 상수 (viewBox 680 × 790)
-//  1px = 0.1m
-// ════════════════════════════════════
-const GOAL_Y  = 10;
-const GOAL_L  = 303;
-const GOAL_R  = 377;
-const GOAL_CX = 340;
-const PPM     = 10;
+// ══════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════
+
+// Soccer pitch (viewBox 680×790, 1px=0.1m)
+const SOCCER = {
+  GOAL_Y: 10, GOAL_L: 303, GOAL_R: 377, PPM: 10,
+  DEFAULT_SX: 340, DEFAULT_SY: 120,
+};
+
+// Futsal pitch (viewBox 520×280, 1px≈1/13m, so PPM=13)
+// Court: 40m×20m, goal width 3m
+// Goal center at x=10, y=140
+// Goal posts: y=121 (top), y=159 (bottom) [19px = ~1.46m each side ≈ 3m total]
+const FUTSAL = {
+  GOAL_X: 10, GOAL_T: 121, GOAL_B: 159, PPM: 13,
+  DEFAULT_SX: 88, DEFAULT_SY: 140,  // penalty spot
+};
 
 const state = {
-  sx: 340, sy: 120,
-  dominant:  'right',    // 'right' | 'left'  — 주발
-  footUsed:  'dominant', // 'dominant' | 'weak'
-  skillWeak: 4,          // 비주발 숙련도 1-10 (주발은 항상 10)
-  shotType:  'normal',   // 'normal' | 'knuckleball' | 'finesse'
-  tech:      'ground',   // 'ground' | 'volley' | 'head'
+  mode:      'soccer',
+  // soccer coords
+  s_sx: SOCCER.DEFAULT_SX, s_sy: SOCCER.DEFAULT_SY,
+  // futsal coords
+  f_sx: FUTSAL.DEFAULT_SX, f_sy: FUTSAL.DEFAULT_SY,
+  // shared
+  dominant:  'right',
+  footUsed:  'dominant',
+  skillWeak: 4,
+  shotType:  'normal',
+  tech:      'ground',
   sit:       'open_play',
   assist:    'none',
   def:       0,
@@ -689,59 +726,106 @@ const state = {
   speed:     'static',
 };
 
-// ─── dominant foot toggle ───
+// ─── mode switch ───
+function setMode(m) {
+  state.mode = m;
+  document.getElementById('btn-mode-soccer').classList.toggle('active', m === 'soccer');
+  document.getElementById('btn-mode-futsal').classList.toggle('active', m === 'futsal');
+
+  const ssvg = document.getElementById('pitch-svg-soccer');
+  const fsvg = document.getElementById('pitch-svg-futsal');
+  const label = document.getElementById('pitch-label');
+
+  if (m === 'soccer') {
+    ssvg.style.display = 'block';
+    fsvg.style.display = 'none';
+    label.textContent = '슛 위치 — 클릭하여 배치 (위쪽 = 공격 골문) · 축구장';
+    // show corner, hide kickin
+    document.getElementById('chip-corner').style.display = '';
+    document.getElementById('chip-kickin').style.display = 'none';
+  } else {
+    ssvg.style.display = 'none';
+    fsvg.style.display = 'block';
+    label.textContent = '슛 위치 — 클릭하여 배치 (왼쪽 = 공격 골문) · 풋살 코트 (40×20m)';
+    // show kickin, hide corner
+    document.getElementById('chip-corner').style.display = 'none';
+    document.getElementById('chip-kickin').style.display = '';
+    // if current sit is corner, reset
+    if (state.sit === 'corner') { resetChip('g-sit', 'open_play'); state.sit = 'open_play'; }
+  }
+
+  // adjust dot colors
+  const dotColor = m === 'soccer' ? '#00e676' : '#40c4ff';
+  document.getElementById('f-shot-dot').style.filter = `drop-shadow(0 0 8px ${dotColor})`;
+
+  render();
+}
+
+function resetChip(groupId, val) {
+  const g = document.getElementById(groupId);
+  g.querySelectorAll('.chip').forEach(c => {
+    c.classList.remove('on');
+    if (c.dataset.v === val) c.classList.add('on');
+  });
+}
+
+// ─── dominant foot ───
 function setDominant(side) {
   state.dominant = side;
   document.getElementById('btn-right').classList.toggle('active', side === 'right');
   document.getElementById('btn-left').classList.toggle('active',  side === 'left');
-
-  // 주발/비주발 라벨 업데이트
-  const subTag = document.getElementById('sub-foot-tag');
+  const subTag   = document.getElementById('sub-foot-tag');
   const domChip  = document.getElementById('chip-dom-label');
   const weakChip = document.getElementById('chip-weak-label');
-
   if (side === 'right') {
-    subTag.textContent   = '왼발';
-    domChip.textContent  = '오른발 (주발)';
-    weakChip.textContent = '왼발 (비주발)';
+    subTag.textContent = '왼발'; domChip.textContent = '오른발 (주발)'; weakChip.textContent = '왼발 (비주발)';
   } else {
-    subTag.textContent   = '오른발';
-    domChip.textContent  = '왼발 (주발)';
-    weakChip.textContent = '오른발 (비주발)';
+    subTag.textContent = '오른발'; domChip.textContent = '왼발 (주발)'; weakChip.textContent = '오른발 (비주발)';
   }
   render();
 }
 
-// ─── distance & angle ───
-function metrics() {
-  const dist  = Math.abs(state.sy - GOAL_Y) / PPM;
-  const gw    = (GOAL_R - GOAL_L) / PPM;
-  const dL    = Math.hypot(state.sx - GOAL_L, state.sy - GOAL_Y) / PPM;
-  const dR    = Math.hypot(state.sx - GOAL_R, state.sy - GOAL_Y) / PPM;
+// ─── metrics ───
+function soccerMetrics() {
+  const sx = state.s_sx, sy = state.s_sy;
+  const dist  = Math.abs(sy - SOCCER.GOAL_Y) / SOCCER.PPM;
+  const gw    = (SOCCER.GOAL_R - SOCCER.GOAL_L) / SOCCER.PPM;
+  const dL    = Math.hypot(sx - SOCCER.GOAL_L, sy - SOCCER.GOAL_Y) / SOCCER.PPM;
+  const dR    = Math.hypot(sx - SOCCER.GOAL_R, sy - SOCCER.GOAL_Y) / SOCCER.PPM;
   const cosA  = (dL*dL + dR*dR - gw*gw) / (2*dL*dR);
   const angle = Math.acos(Math.min(1, Math.max(-1, cosA))) * 180 / Math.PI;
   return { dist, angle };
 }
 
-// ════════════════════════════════════
-//  MODEL COEFFICIENTS
-// ════════════════════════════════════
-const B = {
+function futsalMetrics() {
+  const sx = state.f_sx, sy = state.f_sy;
+  // goal center at (FUTSAL.GOAL_X, 140)
+  const GCX = FUTSAL.GOAL_X, GCY = 140;
+  const dist = Math.abs(sx - GCX) / FUTSAL.PPM;
+  // goal posts
+  const dT = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_T) / FUTSAL.PPM;
+  const dB = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_B) / FUTSAL.PPM;
+  const gw = (FUTSAL.GOAL_B - FUTSAL.GOAL_T) / FUTSAL.PPM;
+  const cosA = (dT*dT + dB*dB - gw*gw) / (2*dT*dB);
+  const angle = Math.acos(Math.min(1, Math.max(-1, cosA))) * 180 / Math.PI;
+  return { dist, angle };
+}
+
+// ══════════════════════════════════════
+//  MODEL COEFFICIENTS (SOCCER)
+// ══════════════════════════════════════
+const BS = {
   intercept: -2.6,
-
   dist(d) {
-  // 5m 이내는 거의 득점 확률이 50~80% 이상 나와야 하므로 계수를 대폭 상향
-  if (d <= 3)  return 2.80; 
-  if (d <= 5)  return 2.30;
-  if (d <= 8)  return 1.40;
-  if (d <= 12) return 0.60;
-  if (d <= 16) return 0.10;
-  if (d <= 22) return -0.50;
-  if (d <= 30) return -1.20;
-  return -1.80; // 중거리 슛은 자비 없음
-},
-
-
+    if (d <= 3)  return 2.80;
+    if (d <= 5)  return 2.30;
+    if (d <= 8)  return 1.40;
+    if (d <= 12) return 0.60;
+    if (d <= 16) return 0.10;
+    if (d <= 22) return -0.50;
+    if (d <= 30) return -1.20;
+    return -1.80;
+  },
   angle(a) {
     if (a >= 40) return  1.10;
     if (a >= 28) return  0.75;
@@ -750,117 +834,95 @@ const B = {
     if (a >=  5) return -0.25;
     return -0.55;
   },
-
-  // 발 사용: 주발은 skill=10 고정, 비주발은 skillWeak
   foot(footUsed, skillWeak) {
-    if (footUsed === 'dominant') {
-      // 주발 skill 10 → 기준 +0.12 보너스
-      return 0.12;
-    } else {
-      // 비주발: skill 10 → 주발과 동일(-0.15 gap), skill 1 → -0.70
-      return -0.70 + (skillWeak / 10) * 0.55;
-    }
+    if (footUsed === 'dominant') return 0.12;
+    return -0.70 + (skillWeak / 10) * 0.55;
   },
+  shotType: { normal: 0.00, knuckleball: -0.08, finesse: 0.14 },
+  tech:     { ground: 0.00, volley: -0.32, head: -0.50 },
+  sit:      { open_play: 0.00, counter: 0.28, set_piece: -0.20, corner: -0.48, penalty: 9.99, kickin: 0.00 },
+  assist:   { none: 0.00, pass: 0.14, through: 0.35, cross: -0.10, cutback: 0.45, rebound: 0.50 },
+  def(n)   { return [0, -0.22, -0.40, -0.54, -0.68, -0.80][Math.min(n,5)]; },
+  press:    { none: 0.45, low: 0.00, medium: -0.55, high: -0.85 },
+  touch:    { controlled: 0.00, first_touch: -0.18, falling: -0.38, big_chance: 0.55 },
+  gk:       { set: 0.00, partial: 0.48, out: 1.40 },
+  ball:     { ground: 0.00, bouncing: -0.22, aerial: -0.35 },
+  speed:    { static: 0.00, slow: 0.08, fast: 0.22 },
+  condition(s) { return (s - 8) * 0.026; },
+};
 
-  // 슛 종류: 일반=기준, 무회전=다소 어렵지만 골키퍼 방해, 감아차기=정확도↑
-  shotType: {
-    normal:      0.00,
-    knuckleball: -0.08,  // 궤적이 불규칙 — 어렵지만 GK에게도 어려움 → net 약간 감소
-    finesse:      0.14,  // 정확도 높은 마무리
+// ══════════════════════════════════════
+//  MODEL COEFFICIENTS (FUTSAL)
+//  풋살: 코트 좁고 골 작음(3m), GK 반응 빠름
+//  → intercept 낮춤, 거리 감쇠 더 급격, 압박 페널티 증가
+// ══════════════════════════════════════
+const BF = {
+  intercept: -2.2,   // 풋살은 기회가 상대적으로 더 많지만 GK 반응 빠름
+  dist(d) {
+    // 풋살 유효사거리 훨씬 짧음
+    if (d <= 2)  return 3.00;
+    if (d <= 4)  return 2.20;
+    if (d <= 6)  return 1.20;
+    if (d <= 9)  return 0.30;
+    if (d <= 12) return -0.40;
+    if (d <= 16) return -1.00;
+    return -1.60;
   },
-
-  // 슈팅 모션
-  tech: {
-    ground:  0.00,
-    volley: -0.32,
-    head:   -0.50,
+  angle(a) {
+    // 좁은 코트라 각도 중요성 더 큼
+    if (a >= 35) return  1.20;
+    if (a >= 25) return  0.80;
+    if (a >= 15) return  0.35;
+    if (a >= 8)  return  0.00;
+    if (a >= 4)  return -0.30;
+    return -0.65;
   },
-
+  foot(footUsed, skillWeak) {
+    if (footUsed === 'dominant') return 0.15;
+    return -0.65 + (skillWeak / 10) * 0.50;
+  },
+  shotType: { normal: 0.00, knuckleball: -0.05, finesse: 0.18 },
+  tech:     { ground: 0.00, volley: -0.25, head: -0.60 },  // 헤더 드묾
   sit: {
-    open_play:  0.00,
-    counter:    0.28,
-    set_piece: -0.20,
-    corner:    -0.48,
-    penalty:    9.99,
+    open_play: 0.00,
+    counter:   0.32,
+    set_piece: -0.15,
+    corner:    -0.50,
+    penalty:   9.99,
+    kickin:    -0.30,  // 킥인: 벽 뒤에서 직접 슛 어려움
   },
-
-  assist: {
-    none:      0.00,
-    pass:      0.14,
-    through:   0.35,
-    cross:    -0.10,
-    cutback:   0.45,
-    rebound:   0.50,
-  },
-
-  def(n) {
-    if (n === 0) return  0.00;
-    if (n === 1) return -0.22;
-    if (n === 2) return -0.40;
-    if (n === 3) return -0.54;
-    if (n === 4) return -0.68;
-    return -0.80;
-  },
-
-  press: {
-  none:   0.45,   // 압박 없으면 '보너스'를 줘서 확 올림
-  low:    0.00,   // 기준점
-  medium: -0.55,  // 몸싸움 시작되면 확 깎임
-  high:   -0.85,  // 숨도 못 쉬는 압박
-},
-
-  touch: {
-    controlled:   0.00,
-    first_touch:  -0.18,
-    falling:      -0.38,
-    big_chance:    0.55,
-  },
-
-  gk: {
-    set:      0.00,
-    partial:  0.48,
-    out:      1.40,
-  },
-
-  ball: {
-    ground:    0.00,
-    bouncing: -0.22,
-    aerial:   -0.35,
-  },
-
-  speed: {
-    static:  0.00,
-    slow:    0.08,
-    fast:    0.22,
-  },
-
-  // 컨디션: 높을수록 좋음. 10=+0.06, 8=0(기준), 1=-0.18
-  condition(s) {
-    return (s - 8) * 0.026;
-  },
+  assist:   { none: 0.00, pass: 0.18, through: 0.40, cross: -0.08, cutback: 0.55, rebound: 0.60 },
+  def(n)   { return [0, -0.28, -0.50, -0.65, -0.78, -0.90][Math.min(n,5)]; },
+  // 풋살은 압박이 더 치명적
+  press:    { none: 0.50, low: 0.00, medium: -0.65, high: -1.00 },
+  touch:    { controlled: 0.00, first_touch: -0.15, falling: -0.40, big_chance: 0.60 },
+  gk:       { set: 0.00, partial: 0.55, out: 1.60 },
+  ball:     { ground: 0.00, bouncing: -0.18, aerial: -0.40 },
+  speed:    { static: 0.00, slow: 0.10, fast: 0.28 },
+  condition(s) { return (s - 8) * 0.026; },
 };
 
 function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
-function fmt(v)     { return (v >= 0 ? '+' : '') + v.toFixed(3); }
-function sgn(v)     { return v > 0.005 ? 'pos' : v < -0.005 ? 'neg' : 'neu'; }
+function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(3); }
+function sgn(v) { return v > 0.005 ? 'pos' : v < -0.005 ? 'neg' : 'neu'; }
 
 // ─── Calculate xG ───
 function calcXG() {
+  const isFutsal = state.mode === 'futsal';
+  const B = isFutsal ? BF : BS;
+
   if (state.sit === 'penalty') {
-    return {
-      xg: 0.760,
-      rows: [{ k: '페널티킥 (고정값)', v: '0.760', c: 'neu' }],
-    };
+    return { xg: 0.760, rows: [{ k: '페널티킥 (고정값)', v: '0.760', c: 'neu' }] };
   }
 
-  const { dist, angle } = metrics();
+  const { dist, angle } = isFutsal ? futsalMetrics() : soccerMetrics();
 
   const bd   = B.dist(dist);
   const ba   = B.angle(angle);
   const bf   = B.foot(state.footUsed, state.skillWeak);
   const bst  = B.shotType[state.shotType];
   const btc  = B.tech[state.tech];
-  const bs   = B.sit[state.sit];
+  const bs   = (B.sit[state.sit] !== undefined ? B.sit[state.sit] : 0);
   const bast = B.assist[state.assist];
   const bdef = B.def(state.def);
   const bpr  = B.press[state.press];
@@ -870,7 +932,7 @@ function calcXG() {
   const bsp  = B.speed[state.speed];
   const bco  = B.condition(state.stamina);
 
-  const z = B.intercept + bd + ba + bf + bst + btc + bs + bast + bdef + bpr + bto + bgk + bbl + bsp + bco;
+  const z  = B.intercept + bd + ba + bf + bst + btc + bs + bast + bdef + bpr + bto + bgk + bbl + bsp + bco;
   const xg = Math.min(0.97, Math.max(0.005, sigmoid(z)));
 
   const dominantSide = state.dominant === 'right' ? '오른발' : '왼발';
@@ -883,21 +945,21 @@ function calcXG() {
   const techLabel     = { ground: '지상 슛', volley: '발리', head: '헤더' }[state.tech];
 
   const rows = [
-    { k: `거리  ${dist.toFixed(1)}m`,                v: fmt(bd),   c: sgn(bd)   },
-    { k: `슈팅각도  ${angle.toFixed(1)}°`,            v: fmt(ba),   c: sgn(ba)   },
-    { k: `슈팅 발  (${footLabel})`,                   v: fmt(bf),   c: sgn(bf)   },
-    { k: `슛 종류  (${shotTypeLabel})`,               v: fmt(bst),  c: sgn(bst)  },
-    { k: `슈팅 모션  (${techLabel})`,                 v: fmt(btc),  c: sgn(btc)  },
-    { k: '상황',                                      v: fmt(bs),   c: sgn(bs)   },
-    { k: '어시스트 유형',                              v: fmt(bast), c: sgn(bast) },
-    { k: `수비 선수  ${state.def}명`,                 v: fmt(bdef), c: sgn(bdef) },
-    { k: '압박 강도',                                 v: fmt(bpr),  c: sgn(bpr)  },
-    { k: '슈팅 자세',                                 v: fmt(bto),  c: sgn(bto)  },
-    { k: '골키퍼 포지셔닝',                            v: fmt(bgk),  c: sgn(bgk)  },
-    { k: '공 상태',                                   v: fmt(bbl),  c: sgn(bbl)  },
-    { k: '진입 속도',                                 v: fmt(bsp),  c: sgn(bsp)  },
-    { k: `컨디션  (${state.stamina}/10)`,             v: fmt(bco),  c: sgn(bco)  },
-    { k: 'z합계  →  σ(z)',   v: z.toFixed(3) + ' → ' + xg.toFixed(4), c: 'neu' },
+    { k: `거리  ${dist.toFixed(1)}m`,               v: fmt(bd),   c: sgn(bd)   },
+    { k: `슈팅각도  ${angle.toFixed(1)}°`,           v: fmt(ba),   c: sgn(ba)   },
+    { k: `슈팅 발  (${footLabel})`,                  v: fmt(bf),   c: sgn(bf)   },
+    { k: `슛 종류  (${shotTypeLabel})`,              v: fmt(bst),  c: sgn(bst)  },
+    { k: `슈팅 모션  (${techLabel})`,                v: fmt(btc),  c: sgn(btc)  },
+    { k: '상황',                                     v: fmt(bs),   c: sgn(bs)   },
+    { k: '어시스트 유형',                             v: fmt(bast), c: sgn(bast) },
+    { k: `수비 선수  ${state.def}명`,                v: fmt(bdef), c: sgn(bdef) },
+    { k: '압박 강도',                                v: fmt(bpr),  c: sgn(bpr)  },
+    { k: '슈팅 자세',                                v: fmt(bto),  c: sgn(bto)  },
+    { k: '골키퍼 포지셔닝',                           v: fmt(bgk),  c: sgn(bgk)  },
+    { k: '공 상태',                                  v: fmt(bbl),  c: sgn(bbl)  },
+    { k: '진입 속도',                                v: fmt(bsp),  c: sgn(bsp)  },
+    { k: `컨디션  (${state.stamina}/10)`,            v: fmt(bco),  c: sgn(bco)  },
+    { k: 'z합계  →  σ(z)', v: z.toFixed(3) + ' → ' + xg.toFixed(4), c: 'neu' },
   ];
 
   return { xg, rows };
@@ -909,7 +971,6 @@ function xgColor(xg) {
   if (xg >= 0.10) return '#ff9100';
   return '#f2415a';
 }
-
 function xgVerdict(xg) {
   if (xg >= 0.65) return '★ 빅 찬스';
   if (xg >= 0.45) return '◈ 좋은 기회';
@@ -924,8 +985,8 @@ function render() {
   const col = xgColor(xg);
 
   const num = document.getElementById('xg-num');
-  num.textContent  = xg.toFixed(2);
-  num.style.color  = col;
+  num.textContent = xg.toFixed(2);
+  num.style.color = col;
   num.style.textShadow = `0 0 60px ${col}44`;
 
   document.getElementById('xg-fill').style.width      = (xg * 100) + '%';
@@ -936,61 +997,84 @@ function render() {
   vrd.style.color = col;
 
   document.getElementById('bd-list').innerHTML = rows.map(r =>
-    `<div class="bd-row">
-       <span class="bd-key">${r.k}</span>
-       <span class="bd-val ${r.c}">${r.v}</span>
-     </div>`
+    `<div class="bd-row"><span class="bd-key">${r.k}</span><span class="bd-val ${r.c}">${r.v}</span></div>`
   ).join('');
 
-  // pitch markers
-  const sx = state.sx, sy = state.sy;
-  document.getElementById('shot-dot').setAttribute('cx', sx);
-  document.getElementById('shot-dot').setAttribute('cy', sy);
-  document.getElementById('shot-ring').setAttribute('cx', sx);
-  document.getElementById('shot-ring').setAttribute('cy', sy);
-  document.getElementById('ang-l').setAttribute('x1', sx);
-  document.getElementById('ang-l').setAttribute('y1', sy);
-  document.getElementById('ang-r').setAttribute('x1', sx);
-  document.getElementById('ang-r').setAttribute('y1', sy);
-
-  const { dist } = metrics();
-  const dl = document.getElementById('dist-lbl');
-  dl.setAttribute('x', sx + 13);
-  dl.setAttribute('y', sy - 6);
-  dl.textContent = dist.toFixed(1) + 'm';
+  // ── Soccer pitch markers ──
+  if (state.mode === 'soccer') {
+    const sx = state.s_sx, sy = state.s_sy;
+    document.getElementById('s-shot-dot').setAttribute('cx', sx);
+    document.getElementById('s-shot-dot').setAttribute('cy', sy);
+    document.getElementById('s-shot-ring').setAttribute('cx', sx);
+    document.getElementById('s-shot-ring').setAttribute('cy', sy);
+    document.getElementById('s-ang-l').setAttribute('x1', sx);
+    document.getElementById('s-ang-l').setAttribute('y1', sy);
+    document.getElementById('s-ang-r').setAttribute('x1', sx);
+    document.getElementById('s-ang-r').setAttribute('y1', sy);
+    const { dist } = soccerMetrics();
+    const dl = document.getElementById('s-dist-lbl');
+    dl.setAttribute('x', sx + 13); dl.setAttribute('y', sy - 6);
+    dl.textContent = dist.toFixed(1) + 'm';
+  } else {
+    // ── Futsal pitch markers ──
+    const fx = state.f_sx, fy = state.f_sy;
+    document.getElementById('f-shot-dot').setAttribute('cx', fx);
+    document.getElementById('f-shot-dot').setAttribute('cy', fy);
+    document.getElementById('f-shot-ring').setAttribute('cx', fx);
+    document.getElementById('f-shot-ring').setAttribute('cy', fy);
+    // angle guide lines to goal posts
+    document.getElementById('f-ang-l').setAttribute('x1', fx);
+    document.getElementById('f-ang-l').setAttribute('y1', fy);
+    document.getElementById('f-ang-r').setAttribute('x1', fx);
+    document.getElementById('f-ang-r').setAttribute('y1', fy);
+    const { dist } = futsalMetrics();
+    const dl = document.getElementById('f-dist-lbl');
+    dl.setAttribute('x', fx + 10); dl.setAttribute('y', fy - 5);
+    dl.textContent = dist.toFixed(1) + 'm';
+  }
 }
 
-// ─── Pitch click with animation ───
-document.getElementById('pitch-svg').addEventListener('click', e => {
-  const r  = e.currentTarget.getBoundingClientRect();
-  state.sx = Math.min(665, Math.max(15, (e.clientX - r.left) * (680 / r.width)));
-  state.sy = Math.min(780, Math.max(12, (e.clientY - r.top)  * (790 / r.height)));
+// ─── Soccer pitch click ───
+document.getElementById('pitch-svg-soccer').addEventListener('click', e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  state.s_sx = Math.min(665, Math.max(15, (e.clientX - r.left) * (680 / r.width)));
+  state.s_sy = Math.min(780, Math.max(12, (e.clientY - r.top)  * (790 / r.height)));
+  animateDot('s-shot-dot', 's-shot-ring');
+  render();
+});
 
-  // Trigger animation
-  const dot  = document.getElementById('shot-dot');
-  const ring = document.getElementById('shot-ring');
+// ─── Futsal pitch click ───
+document.getElementById('pitch-svg-futsal').addEventListener('click', e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  const nx = Math.min(508, Math.max(12, (e.clientX - r.left) * (520 / r.width)));
+  const ny = Math.min(268, Math.max(12, (e.clientY - r.top)  * (280 / r.height)));
+  // only allow left half (attack side, x > goal line)
+  state.f_sx = Math.max(12, nx);
+  state.f_sy = ny;
+  animateDot('f-shot-dot', 'f-shot-ring');
+  render();
+});
+
+function animateDot(dotId, ringId) {
+  const dot  = document.getElementById(dotId);
+  const ring = document.getElementById(ringId);
   dot.classList.remove('dot-animate');
   ring.classList.remove('ring-animate');
-  // Force reflow so animation restarts
   void dot.getBoundingClientRect();
   dot.classList.add('dot-animate');
   ring.classList.add('ring-animate');
-
-  render();
-
-  // Clean up classes after animation
   setTimeout(() => {
     dot.classList.remove('dot-animate');
     ring.classList.remove('ring-animate');
   }, 400);
-});
+}
 
 // ─── Chips ───
 function bindChips(id, key) {
   const g = document.getElementById(id);
   g.querySelectorAll('.chip').forEach(c => {
     c.addEventListener('click', () => {
-      g.querySelectorAll('.chip').forEach(x => x.classList.remove('on', 'on-amber'));
+      g.querySelectorAll('.chip').forEach(x => x.classList.remove('on'));
       c.classList.add('on');
       state[key] = c.dataset.v;
       render();
@@ -1009,13 +1093,12 @@ bindChips('g-ball',     'ball');
 bindChips('g-speed',    'speed');
 
 // ─── Sliders ───
-function bindSlider(id, valId, key, suffix, cb) {
+function bindSlider(id, valId, key, suffix) {
   const sl = document.getElementById(id);
   const vl = document.getElementById(valId);
   sl.addEventListener('input', () => {
     state[key] = +sl.value;
     vl.textContent = sl.value + (suffix || '');
-    if (cb) cb();
     render();
   });
 }
@@ -1023,46 +1106,30 @@ bindSlider('sl-weak',    'val-weak',    'skillWeak', '');
 bindSlider('sl-def',     'val-def',     'def',       '명');
 bindSlider('sl-stamina', 'val-stamina', 'stamina',   '');
 
-render();
-  // ─── Save as Image ───
+// ─── Save as Image ───
 document.getElementById('btn-save').addEventListener('click', function() {
   const btn = this;
-  const originalText = btn.textContent;
-  
-  // 버튼 클릭 피드백
+  const orig = btn.textContent;
   btn.textContent = '⏳ 저장 중...';
   btn.style.background = '#00e676';
   btn.style.color = '#060a0d';
-
-  // 캡처할 대상 요소를 선택 (전체 레이아웃)
-  const targetElement = document.querySelector('.layout');
-
-  // html2canvas 실행
-  html2canvas(targetElement, {
-    backgroundColor: '#060a0d', // 캡처 시 배경색 지정 (네 테마 배경색)
-    scale: 2, // 화질을 2배로 올려서 텍스트 깨짐 방지
-    logging: false
+  html2canvas(document.querySelector('.layout'), {
+    backgroundColor: '#060a0d', scale: 2, logging: false
   }).then(canvas => {
-    // 캔버스를 이미지 데이터 URL로 변환
-    const imgData = canvas.toDataURL('image/png');
-    
-    // 가상의 다운로드 링크 생성 후 클릭 이벤트 발생
     const link = document.createElement('a');
-    link.download = `xG_Report_${new Date().getTime()}.png`; // 파일명에 타임스탬프 추가
-    link.href = imgData;
+    link.download = `xG_Report_${new Date().getTime()}.png`;
+    link.href = canvas.toDataURL('image/png');
     link.click();
-
-    // 버튼 원상복구
-    btn.textContent = originalText;
+    btn.textContent = orig;
     btn.style.background = 'rgba(0,230,118,0.12)';
     btn.style.color = '#00e676';
-  }).catch(err => {
-    console.error('캡처 실패:', err);
+  }).catch(() => {
     btn.textContent = '❌ 저장 실패';
-    setTimeout(() => { btn.textContent = originalText; }, 2000);
+    setTimeout(() => { btn.textContent = orig; }, 2000);
   });
 });
 
+render();
 </script>
 </body>
 </html>
