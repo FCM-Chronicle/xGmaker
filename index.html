@@ -664,7 +664,7 @@ body.futsal-mode #pitch-svg .pitch-bg { fill: #0a1a2a; }
 <span class="kw">xG</span> <span class="op">=</span> σ(<span class="vr">z</span>) <span class="op">=</span> 1/(1<span class="op">+</span>e<sup>−z</sup>)<br><br>
 <span class="vr">z</span> <span class="op">=</span> β0 <span class="cm">// intercept</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(dist) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
-&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(angle) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 지수감쇠: A·(1−e^(−θ/τ))−c</span><br>
+&nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(angle) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// 비선형</span><br>
 &nbsp;&nbsp;<span class="op">+</span> <span class="kw">f</span>(foot·skill) &nbsp;<span class="cm">// 주/비주발×숙련도</span><br>
 &nbsp;&nbsp;<span class="op">+</span> β · shot_type<br>
 &nbsp;&nbsp;<span class="op">+</span> β · motion<br>
@@ -690,7 +690,7 @@ body.futsal-mode #pitch-svg .pitch-bg { fill: #0a1a2a; }
 
 // Soccer pitch (viewBox 680×790, 1px=0.1m)
 const SOCCER = {
-  GOAL_Y: 0, GOAL_L: 303, GOAL_R: 377, PPM: 10,
+  GOAL_Y: 10, GOAL_L: 303, GOAL_R: 377, PPM: 10,
   DEFAULT_SX: 340, DEFAULT_SY: 120,
 };
 
@@ -788,29 +788,24 @@ function setDominant(side) {
 // ─── metrics ───
 function soccerMetrics() {
   const sx = state.s_sx, sy = state.s_sy;
-  // 골대 중앙까지의 실제 직선 거리 (피타고라스)
-  const GCX = (SOCCER.GOAL_L + SOCCER.GOAL_R) / 2;
-  const GCY = SOCCER.GOAL_Y;
-  const dist = Math.hypot(sx - GCX, sy - GCY) / SOCCER.PPM;
-  // 슈팅 각도: 코사인 법칙
-  const gw   = (SOCCER.GOAL_R - SOCCER.GOAL_L) / SOCCER.PPM;
-  const dL   = Math.hypot(sx - SOCCER.GOAL_L, sy - GCY) / SOCCER.PPM;
-  const dR   = Math.hypot(sx - SOCCER.GOAL_R, sy - GCY) / SOCCER.PPM;
-  const cosA = (dL*dL + dR*dR - gw*gw) / (2*dL*dR);
+  const dist  = Math.abs(sy - SOCCER.GOAL_Y) / SOCCER.PPM;
+  const gw    = (SOCCER.GOAL_R - SOCCER.GOAL_L) / SOCCER.PPM;
+  const dL    = Math.hypot(sx - SOCCER.GOAL_L, sy - SOCCER.GOAL_Y) / SOCCER.PPM;
+  const dR    = Math.hypot(sx - SOCCER.GOAL_R, sy - SOCCER.GOAL_Y) / SOCCER.PPM;
+  const cosA  = (dL*dL + dR*dR - gw*gw) / (2*dL*dR);
   const angle = Math.acos(Math.min(1, Math.max(-1, cosA))) * 180 / Math.PI;
   return { dist, angle };
 }
 
 function futsalMetrics() {
   const sx = state.f_sx, sy = state.f_sy;
-  // 골대 중앙까지의 실제 직선 거리 (피타고라스)
-  const GCX = FUTSAL.GOAL_X;
-  const GCY = (FUTSAL.GOAL_T + FUTSAL.GOAL_B) / 2;
-  const dist = Math.hypot(sx - GCX, sy - GCY) / FUTSAL.PPM;
-  // 슈팅 각도
-  const dT   = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_T) / FUTSAL.PPM;
-  const dB   = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_B) / FUTSAL.PPM;
-  const gw   = (FUTSAL.GOAL_B - FUTSAL.GOAL_T) / FUTSAL.PPM;
+  // goal center at (FUTSAL.GOAL_X, 140)
+  const GCX = FUTSAL.GOAL_X, GCY = 140;
+  const dist = Math.abs(sx - GCX) / FUTSAL.PPM;
+  // goal posts
+  const dT = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_T) / FUTSAL.PPM;
+  const dB = Math.hypot(sx - GCX, sy - FUTSAL.GOAL_B) / FUTSAL.PPM;
+  const gw = (FUTSAL.GOAL_B - FUTSAL.GOAL_T) / FUTSAL.PPM;
   const cosA = (dT*dT + dB*dB - gw*gw) / (2*dT*dB);
   const angle = Math.acos(Math.min(1, Math.max(-1, cosA))) * 180 / Math.PI;
   return { dist, angle };
@@ -832,9 +827,12 @@ const BS = {
     return -1.80;
   },
   angle(a) {
-    // 기하급수적 감쇠: log-odds = 2.2 * (1 - e^(-a/18)) - 1.15
-    // a=40° → +1.10, a=20° → +0.35, a=10° → -0.18, a=5° → -0.62, a=1° → -1.05
-    return 2.2 * (1 - Math.exp(-a / 18)) - 1.15;
+    if (a >= 40) return  1.10;
+    if (a >= 28) return  0.75;
+    if (a >= 18) return  0.35;
+    if (a >= 10) return  0.00;
+    if (a >=  5) return -0.25;
+    return -0.55;
   },
   foot(footUsed, skillWeak) {
     if (footUsed === 'dominant') return 0.12;
@@ -871,10 +869,13 @@ const BF = {
     return -1.60;
   },
   angle(a) {
-    // 풋살: 좁은 골문(3m)이라 각도 영향 더 가파름
-    // log-odds = 2.5 * (1 - e^(-a/15)) - 1.30
-    // a=35° → +1.18, a=20° → +0.52, a=10° → -0.16, a=4° → -0.82, a=1° → -1.12
-    return 2.5 * (1 - Math.exp(-a / 15)) - 1.30;
+    // 좁은 코트라 각도 중요성 더 큼
+    if (a >= 35) return  1.20;
+    if (a >= 25) return  0.80;
+    if (a >= 15) return  0.35;
+    if (a >= 8)  return  0.00;
+    if (a >= 4)  return -0.30;
+    return -0.65;
   },
   foot(footUsed, skillWeak) {
     if (footUsed === 'dominant') return 0.15;
